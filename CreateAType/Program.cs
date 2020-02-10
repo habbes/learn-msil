@@ -8,11 +8,11 @@ namespace CreateAType
     {
         static void Main(string[] args)
         {
-            var assemblyBuilder = AppDomain.CurrentDomain.DefineDynamicAssembly(
+            var assemblyBuilder = AssemblyBuilder.DefineDynamicAssembly(
                 new AssemblyName("Demo"), AssemblyBuilderAccess.Run);
             var module = assemblyBuilder.DefineDynamicModule("PersonModule");
 
-            var typeBuilder = module.DefineType("Person");
+            var typeBuilder = module.DefineType("Person", TypeAttributes.Public);
             var nameField = typeBuilder.DefineField("name", typeof(string), FieldAttributes.Private);
 
             var ctor = typeBuilder.DefineConstructor(MethodAttributes.Public,
@@ -35,6 +35,7 @@ namespace CreateAType
                 MethodAttributes.HideBySig,
                 typeof(string),
                 Type.EmptyTypes);
+            nameProperty.SetGetMethod(namePropertyGetter);
             
             var getterIl = namePropertyGetter.GetILGenerator();
             getterIl.Emit(OpCodes.Ldarg_0);
